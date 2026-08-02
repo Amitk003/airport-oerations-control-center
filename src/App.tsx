@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { OperationalProvider } from './context/OperationalContext';
 import { Header } from './components/Header';
 import { Navigation, ActiveTab } from './components/Navigation';
 
-// Views
-import { OverviewDashboard } from './components/views/OverviewDashboard';
-import { FlightOperations } from './components/views/FlightOperations';
-import { GateManagement } from './components/views/GateManagement';
-import { BaggageTracking } from './components/views/BaggageTracking';
-import { PassengerOperations } from './components/views/PassengerOperations';
-import { SecurityScreening } from './components/views/SecurityScreening';
-import { MaintenanceFleet } from './components/views/MaintenanceFleet';
-import { StaffDispatch } from './components/views/StaffDispatch';
-import { RetailAnalytics } from './components/views/RetailAnalytics';
-import { IncidentCommand } from './components/views/IncidentCommand';
-import { DatasetInspector } from './components/views/DatasetInspector';
+// Lazy load views for better performance
+const OverviewDashboard = lazy(() => import('./components/views/OverviewDashboard').then(m => ({ default: m.OverviewDashboard })));
+const FlightOperations = lazy(() => import('./components/views/FlightOperations').then(m => ({ default: m.FlightOperations })));
+const GateManagement = lazy(() => import('./components/views/GateManagement').then(m => ({ default: m.GateManagement })));
+const BaggageTracking = lazy(() => import('./components/views/BaggageTracking').then(m => ({ default: m.BaggageTracking })));
+const PassengerOperations = lazy(() => import('./components/views/PassengerOperations').then(m => ({ default: m.PassengerOperations })));
+const SecurityScreening = lazy(() => import('./components/views/SecurityScreening').then(m => ({ default: m.SecurityScreening })));
+const MaintenanceFleet = lazy(() => import('./components/views/MaintenanceFleet').then(m => ({ default: m.MaintenanceFleet })));
+const StaffDispatch = lazy(() => import('./components/views/StaffDispatch').then(m => ({ default: m.StaffDispatch })));
+const RetailAnalytics = lazy(() => import('./components/views/RetailAnalytics').then(m => ({ default: m.RetailAnalytics })));
+const IncidentCommand = lazy(() => import('./components/views/IncidentCommand').then(m => ({ default: m.IncidentCommand })));
+const DatasetInspector = lazy(() => import('./components/views/DatasetInspector').then(m => ({ default: m.DatasetInspector })));
 
 // Modals
 import { FlightDetailModal } from './components/modals/FlightDetailModal';
@@ -23,22 +23,33 @@ import { IncidentDetailModal } from './components/modals/IncidentDetailModal';
 import { NewFlightModal } from './components/modals/NewFlightModal';
 import { NewMaintenanceModal } from './components/modals/NewMaintenanceModal';
 
-const views: { id: ActiveTab; Component: React.FC }[] = [
-  { id: 'overview', Component: OverviewDashboard },
-  { id: 'flights', Component: FlightOperations },
-  { id: 'gates', Component: GateManagement },
-  { id: 'baggage', Component: BaggageTracking },
-  { id: 'passengers', Component: PassengerOperations },
-  { id: 'security', Component: SecurityScreening },
-  { id: 'maintenance', Component: MaintenanceFleet },
-  { id: 'staff', Component: StaffDispatch },
-  { id: 'retail', Component: RetailAnalytics },
-  { id: 'incidents', Component: IncidentCommand },
-  { id: 'dataset', Component: DatasetInspector },
-];
+function LoadingSpinner() {
+  return (
+    <div className="flex items-center justify-center py-20">
+      <div className="text-[#1A1A1A] font-mono text-sm">Loading...</div>
+    </div>
+  );
+}
 
 function MainLayout() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('overview');
+
+  const renderView = () => {
+    switch (activeTab) {
+      case 'overview': return <OverviewDashboard />;
+      case 'flights': return <FlightOperations />;
+      case 'gates': return <GateManagement />;
+      case 'baggage': return <BaggageTracking />;
+      case 'passengers': return <PassengerOperations />;
+      case 'security': return <SecurityScreening />;
+      case 'maintenance': return <MaintenanceFleet />;
+      case 'staff': return <StaffDispatch />;
+      case 'retail': return <RetailAnalytics />;
+      case 'incidents': return <IncidentCommand />;
+      case 'dataset': return <DatasetInspector />;
+      default: return <OverviewDashboard />;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#F2F1EF] text-[#1A1A1A] flex flex-col font-sans selection:bg-[#1A1A1A] selection:text-white">
@@ -46,14 +57,9 @@ function MainLayout() {
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <main className="flex-1 max-w-[1400px] w-full mx-auto p-4 sm:p-6 space-y-6">
-        {views.map(({ id, Component }) => (
-          <div
-            key={id}
-            style={{ display: activeTab === id ? 'block' : 'none' }}
-          >
-            <Component />
-          </div>
-        ))}
+        <Suspense fallback={<LoadingSpinner />}>
+          {renderView()}
+        </Suspense>
       </main>
 
       <footer className="border-t border-[#1A1A1A] bg-[#1A1A1A] text-white py-4 px-6 text-center text-xs font-mono">
