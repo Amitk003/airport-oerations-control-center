@@ -1,0 +1,6 @@
+{
+  "name": "Airport Operations Control Center",
+  "description": "Real-time Airport Operations Control Center (AOCC) unifying flight schedules, gate events, baggage movement, passenger flows, security screening, maintenance logs, staff shifts, and retail operations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
