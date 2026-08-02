@@ -123,14 +123,115 @@ export const OperationalProvider: React.FC<{ children: React.ReactNode }> = ({ c
             fetch(`${CSV_BASE_PATH}/${CSV_FILES.retail}`).then(r => r.text()),
           ]);
 
-        setFlights(parseFlightsCSV(flightsCsv));
-        setGateEvents(parseGateEventsCSV(gatesCsv));
-        setBaggage(parseBaggageCSV(baggageCsv));
-        setPassengers(parsePassengersCSV(passengersCsv));
-        setSecurity(parseSecurityCSV(securityCsv));
-        setMaintenance(parseMaintenanceCSV(maintenanceCsv));
-        setStaff(parseStaffCSV(staffCsv));
-        setRetail(parseRetailCSV(retailCsv));
+        const parsedFlights = parseFlightsCSV(flightsCsv);
+        const parsedGates = parseGateEventsCSV(gatesCsv);
+        const parsedBaggage = parseBaggageCSV(baggageCsv);
+        const parsedPassengers = parsePassengersCSV(passengersCsv);
+        const parsedSecurity = parseSecurityCSV(securityCsv);
+        const parsedMaintenance = parseMaintenanceCSV(maintenanceCsv);
+        const parsedStaff = parseStaffCSV(staffCsv);
+        const parsedRetail = parseRetailCSV(retailCsv);
+
+        setFlights(parsedFlights);
+        setGateEvents(parsedGates);
+        setBaggage(parsedBaggage);
+        setPassengers(parsedPassengers);
+        setSecurity(parsedSecurity);
+        setMaintenance(parsedMaintenance);
+        setStaff(parsedStaff);
+        setRetail(parsedRetail);
+
+        // Generate initial events from loaded data
+        const initialEvents: EventFeedItem[] = [];
+
+        // Add flight events
+        parsedFlights.slice(0, 10).forEach((f) => {
+          initialEvents.push({
+            id: `feed-flight-${f.id}`,
+            timestamp: f.scheduledDeparture || new Date().toISOString(),
+            type: 'flight',
+            severity: f.delayMinutes > 30 ? 'warning' : 'info',
+            title: `${f.flightNumber} ${f.status}`,
+            description: `${f.airline} ${f.origin} to ${f.destination}`,
+            flightNumber: f.flightNumber,
+            terminal: f.terminal,
+          });
+        });
+
+        // Add gate events
+        parsedGates.slice(0, 5).forEach((g) => {
+          initialEvents.push({
+            id: `feed-gate-${g.id}`,
+            timestamp: g.timestamp || new Date().toISOString(),
+            type: 'gate',
+            severity: g.isEmergency ? 'critical' : 'info',
+            title: `Gate ${g.gate}: ${g.eventType}`,
+            description: `Flight ${g.flightNumber} at ${g.terminal}`,
+            flightNumber: g.flightNumber,
+            terminal: g.terminal,
+          });
+        });
+
+        // Add maintenance events
+        parsedMaintenance.slice(0, 3).forEach((m) => {
+          initialEvents.push({
+            id: `feed-mt-${m.id}`,
+            timestamp: m.reportedAt || new Date().toISOString(),
+            type: 'maintenance',
+            severity: m.severity === 'Critical' || m.severity === 'High' ? 'warning' : 'info',
+            title: `Maintenance: ${m.issueDescription}`,
+            description: `Aircraft ${m.aircraftId} - ${m.status}`,
+            terminal: 'All',
+          });
+        });
+
+        // Add security events
+        parsedSecurity.slice(0, 3).forEach((s) => {
+          initialEvents.push({
+            id: `feed-sec-${s.id}`,
+            timestamp: s.screeningTime || new Date().toISOString(),
+            type: 'security',
+            severity: s.waitTimeMinutes > 30 ? 'warning' : 'info',
+            title: `Security ${s.checkpointId}: ${s.result}`,
+            description: `Queue: ${s.queueLength} pax, Wait: ${s.waitTimeMinutes}min`,
+            terminal: s.terminal,
+          });
+        });
+
+        // Sort by timestamp descending
+        initialEvents.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+        setEventFeed(initialEvents.slice(0, 20));
+
+        // Generate initial alerts from anomalies
+        const initialAlerts: AlertItem[] = [];
+        parsedFlights.filter(f => f.delayMinutes > 60).slice(0, 2).forEach(f => {
+          initialAlerts.push({
+            id: `alert-delay-${f.id}`,
+            timestamp: new Date().toISOString(),
+            severity: 'WARNING',
+            category: 'Flight',
+            title: `Flight ${f.flightNumber} delayed by ${f.delayMinutes}min`,
+            description: `${f.airline} ${f.origin} to ${f.destination}. Reason: ${f.delayReason || 'Not specified'}`,
+            entityId: f.id,
+            entityType: 'flight',
+            resolved: false,
+          });
+        });
+        parsedSecurity.filter(s => s.waitTimeMinutes > 40).slice(0, 2).forEach(s => {
+          initialAlerts.push({
+            id: `alert-sec-${s.id}`,
+            timestamp: new Date().toISOString(),
+            severity: 'WARNING',
+            category: 'Security',
+            title: `Security ${s.checkpointId} congested`,
+            description: `Queue: ${s.queueLength} pax, Wait: ${s.waitTimeMinutes}min`,
+            entityId: s.id,
+            entityType: 'checkpoint',
+            resolved: false,
+          });
+        });
+        setAlerts(initialAlerts);
+
         setIsLoaded(true);
       } catch (error) {
         console.error('Failed to load CSV data:', error);
@@ -172,18 +273,36 @@ export const OperationalProvider: React.FC<{ children: React.ReactNode }> = ({ c
           }));
         }
         if (currentTick % 10 === 0) {
-          setFlights((prev) => prev.map((f) => {
-            if (f.status === 'Scheduled' && Math.random() > 0.7) return { ...f, status: 'Boarding' as FlightStatus };
-            if (f.status === 'On Time' && Math.random() > 0.7) return { ...f, status: 'Boarding' as FlightStatus };
-            if (f.status === 'Boarding' && Math.random() > 0.6) return { ...f, status: 'Departed' as FlightStatus, actualDeparture: new Date().toISOString() };
-            return f;
-          }));
+          setFlights((prev) => {
+            let newFeed = false;
+            const updated = prev.map((f) => {
+              if (f.status === 'Scheduled' && Math.random() > 0.7) {
+                setEventFeed((ef) => [{ id: `feed-${Date.now()}-${f.id}`, timestamp: new Date().toISOString(), type: 'flight', severity: 'info', title: `${f.flightNumber} now boarding`, description: `${f.airline} ${f.origin} to ${f.destination}` }, ...ef].slice(0, 50));
+                return { ...f, status: 'Boarding' as FlightStatus };
+              }
+              if (f.status === 'On Time' && Math.random() > 0.7) {
+                setEventFeed((ef) => [{ id: `feed-${Date.now()}-${f.id}`, timestamp: new Date().toISOString(), type: 'flight', severity: 'info', title: `${f.flightNumber} now boarding`, description: `${f.airline} ${f.origin} to ${f.destination}` }, ...ef].slice(0, 50));
+                return { ...f, status: 'Boarding' as FlightStatus };
+              }
+              if (f.status === 'Boarding' && Math.random() > 0.6) {
+                setEventFeed((ef) => [{ id: `feed-${Date.now()}-${f.id}`, timestamp: new Date().toISOString(), type: 'flight', severity: 'info', title: `${f.flightNumber} departed`, description: `${f.airline} ${f.origin} to ${f.destination}` }, ...ef].slice(0, 50));
+                return { ...f, status: 'Departed' as FlightStatus, actualDeparture: new Date().toISOString() };
+              }
+              return f;
+            });
+            return updated;
+          });
         }
         if (currentTick > 0 && currentTick % 20 === 0) {
           const alertTypes = ['security', 'baggage', 'flight'] as const;
           const randomType = alertTypes[Math.floor(Math.random() * alertTypes.length)];
           if (randomType === 'security') {
             setAlerts((prev) => [{ id: `alt-gen-${Date.now()}`, timestamp: new Date().toISOString(), severity: 'WARNING', category: 'Security', title: 'High Security Line Congestion', description: 'Queue sensors detected passenger backlog.', resolved: false, resolutionAction: 'Increase open lanes.' }, ...prev]);
+            setEventFeed((prev) => [{ id: `feed-gen-${Date.now()}`, timestamp: new Date().toISOString(), type: 'security', severity: 'warning', title: 'Security queue surge detected', description: 'Passenger backlog at checkpoint.' }, ...prev].slice(0, 50));
+          } else if (randomType === 'baggage') {
+            setEventFeed((prev) => [{ id: `feed-gen-${Date.now()}`, timestamp: new Date().toISOString(), type: 'baggage', severity: 'info', title: 'Baggage sorting in progress', description: 'Belt conveyor operating normally.' }, ...prev].slice(0, 50));
+          } else {
+            setEventFeed((prev) => [{ id: `feed-gen-${Date.now()}`, timestamp: new Date().toISOString(), type: 'flight', severity: 'info', title: 'Flight status update', description: 'Operational status changed.' }, ...prev].slice(0, 50));
           }
         }
         return currentTick;
