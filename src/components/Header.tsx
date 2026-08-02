@@ -84,7 +84,7 @@ export const Header: React.FC = () => {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
         {/* Brand & Mission Status */}
         <div className="flex items-center space-x-3">
           <div className="w-9 h-9 bg-[#1A1A1A] text-white flex items-center justify-center font-bold border border-[#1A1A1A]">
@@ -194,7 +194,7 @@ export const Header: React.FC = () => {
 
       {/* Operational KPI Strip */}
       <div className="bg-[#F9F8F6] border-t border-[#1A1A1A] py-2 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 text-xs font-mono">
+        <div className="max-w-[1400px] mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 text-xs font-mono">
           <div className="bg-white border border-[#1A1A1A] p-2 flex items-center space-x-2">
             <Plane className="w-4 h-4 text-[#1A1A1A]" />
             <div>

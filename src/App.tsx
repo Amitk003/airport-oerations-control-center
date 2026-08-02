@@ -35,7 +35,7 @@ function MainLayout() {
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Primary Workspace Viewport */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
+      <main className="flex-1 max-w-[1400px] w-full mx-auto p-4 sm:p-6 space-y-6">
         {activeTab === 'overview' && <OverviewDashboard />}
         {activeTab === 'flights' && <FlightOperations />}
         {activeTab === 'gates' && <GateManagement />}
