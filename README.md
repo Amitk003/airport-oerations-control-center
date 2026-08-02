@@ -1,30 +1,113 @@
 # Airport Operations Control Center (AOCC)
 
-A production-quality, real-time Airport Operations Control Center built for the **Frontend Wars 2026 Grand Finale** hackathon. This application transforms the provided multi-table airport dataset from **Indira Gandhi International Airport (DEL)** into a unified, interactive operational interface.
+A real-time, data-driven Airport Operations Control Center built for the Frontend Wars 2026 Grand Finale. This system unifies 8 distinct operational streams from Indira Gandhi International Airport (DEL) into a single high-density command terminal.
 
-## Live Demo
+[Live Application Demo](https://airport-operations-control-center-theta.vercel.app)
 
-[View Live Application](https://your-deployed-url.vercel.app)
+---
 
-## Dataset
+## Why AOCC?
 
-This application loads real operational data from Delhi Airport (DEL) including:
-- 100+ flight records from airlines: Vistara, British Airways, KLM, SpiceJet, Air France, Emirates, IndiGo, Qatar Airways, Singapore Airlines, Lufthansa
-- Gate events with jet bridge, GPU, and fueling telemetry
-- Baggage tracking with RFID scan points and conveyor status
-- Passenger manifests with check-in, security, and boarding status
-- Security screening with queue lengths, wait times, and threat levels
-- Maintenance logs with severity levels and technician assignments
-- Staff shifts with department assignments and contact info
-- Retail transactions with POS data across terminal outlets
+Modern airport operations depend on real-time awareness across ground, gate, flight, passenger, and security domains. Standard tools separate these workflows into isolated views. AOCC connects these datasets in a single interface, giving operators complete control over airport throughput, delay prevention, and emergency response.
+
+- **Unified Intelligence**: Correlates 8 live CSV datasets covering 100+ flights, gate ground power, baggage scans, passenger manifests, security queues, maintenance logs, staff shifts, and terminal retail revenue.
+- **Real-Time Simulation Engine**: Simulates live airport events with controllable playback speeds (1x to 30x), automated anomaly detection, and instant incident injection.
+- **Actionable Control**: Allows operators to update flight schedules, toggle gate equipment, reassign staff, manage security lanes, log maintenance orders, and resolve critical incidents directly from the dashboard.
+- **Tactical Information Density**: Designed with a high-contrast tactical interface optimized for control room displays and fast decision-making under operational pressure.
+
+---
+
+## Operational Modules
+
+### 1. Overview Dashboard
+- High-level KPI indicators for active flights, on-time rates, gate occupancy, baggage SLA compliance, and security wait times.
+- Terminal Radar map visualizing live status across Terminals A, B, and C.
+- Security checkpoint queue trends and flight status distribution charts.
+- Live event stream capturing operational occurrences in real time.
+
+### 2. Flight Operations
+- Complete schedule management for over 100 flights across major international and domestic carriers.
+- Quick filtering by flight status, airline, and terminal.
+- Flight creation, delay logging with reason codes, and column-level sorting across all fields.
+
+### 3. Gate Management
+- Terminal gate grid with real-time status tracking (Boarding, Deboarding, Maintenance, Available).
+- Direct control toggles for Jet Bridge attachments and Ground Power Units (GPU).
+- Turnaround timer countdowns and priority equipment alerts.
+
+### 4. Baggage Tracking
+- End-to-end RFID baggage movement tracking across scan points.
+- Instant flags for dangerous goods, overweight luggage, and international routing.
+- Real-time conveyor belt assignment monitoring.
+
+### 5. Passenger Operations
+- Passenger manifest matching with PNR lookup and flight linkage.
+- Cabin class distribution metrics (First, Business, Economy).
+- Quick identification of VIP passengers and passengers requiring special assistance.
+
+### 6. Security Screening
+- Real-time queue length tracking and estimated wait time calculations.
+- Active threat level monitoring (Low, Elevated, High).
+- Dynamic lane opening and closing controls to prevent checkpoint bottlenecks.
+
+### 7. Maintenance & Fleet
+- Technical work order management with clear severity grading (Critical, High, Medium, Low).
+- Grounding status monitoring for aircraft safety compliance.
+- Direct technician assignment and completion tracking.
+
+### 8. Staff Dispatch
+- Personnel monitoring across Operations, Security, Maintenance, and Ground Handling.
+- Real-time shift status toggles (Active, On Break, Off Duty).
+- Overtime tracking and multi-language capability indexing.
+
+### 9. Terminal Retail Analytics
+- Store-by-store POS revenue tracking in INR.
+- Category revenue distribution charts and store performance rankings.
+- Transaction logs linked to terminal foot traffic.
+
+### 10. Incident Command
+- Live alert resolution workflow for system anomalies.
+- Scenario simulation injector allowing operators to trigger weather delays, security surges, or emergency landings.
+- Cross-table impact tracking linking alerts directly to affected flights and gates.
+
+### 11. Dataset Inspector
+- Full raw data viewer for all 8 underlying airport tables.
+- Data schema dictionary explaining operational field definitions.
+- Built-in CSV import and export capabilities.
+
+---
+
+## Data Integration & Cross-Table Mapping
+
+The application maintains strict relational integrity across independent operational tables:
+
+- **Flight to Gate**: Gate assignments automatically sync with ground power and bridge status.
+- **Flight to Passenger & Baggage**: Flight updates cascade to passenger manifests and baggage RFID checkpoints.
+- **Flight to Maintenance**: Aircraft maintenance flags automatically update flight availability.
+- **Gate to Staff**: Personnel dispatches map directly to active terminal gate stations.
+
+---
+
+## Technical Stack
+
+| Category | Technology |
+| --- | --- |
+| Core Framework | React 19, TypeScript |
+| Build Tool | Vite 6 |
+| Styling | Tailwind CSS 4 |
+| Visualization | Recharts |
+| Icons | Lucide React |
+| Data Processing | PapaParse |
+
+---
 
 ## Quick Start
 
 ### Prerequisites
-- Node.js 18+ (recommended: 20+)
+- Node.js 18 or higher (Node.js 20 recommended)
 - npm or yarn
 
-### Installation
+### Setup Instructions
 
 ```bash
 # Clone the repository
@@ -34,187 +117,22 @@ cd airport-oerations-control-center
 # Install dependencies
 npm install
 
-# Start development server
+# Run development server
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000`
+Open `http://localhost:3000` in your browser.
 
-
-
-## Tech Stack
-
-| Technology | Purpose |
-|------------|---------|
-| React 19 | UI Framework |
-| TypeScript | Type Safety |
-| Vite 6 | Build Tool and Dev Server |
-| Tailwind CSS 4 | Styling |
-| Recharts | Data Visualization |
-| Lucide React | Icons |
-| PapaParse | CSV Parsing |
-
-## Project Structure
-
-```
-airport-operations-control-center/
-├── public/data/              # CSV dataset files (loaded at runtime)
-│   ├── flights.csv
-│   ├── gate_events.csv
-│   ├── baggage.csv
-│   ├── passengers.csv
-│   ├── security_screening.csv
-│   ├── maintenance_logs.csv
-│   ├── staff_shifts.csv
-│   └── retail_transactions.csv
-├── src/
-│   ├── components/
-│   │   ├── views/           # 11 operational views
-│   │   │   ├── OverviewDashboard.tsx
-│   │   │   ├── FlightOperations.tsx
-│   │   │   ├── GateManagement.tsx
-│   │   │   ├── BaggageTracking.tsx
-│   │   │   ├── PassengerOperations.tsx
-│   │   │   ├── SecurityScreening.tsx
-│   │   │   ├── MaintenanceFleet.tsx
-│   │   │   ├── StaffDispatch.tsx
-│   │   │   ├── RetailAnalytics.tsx
-│   │   │   ├── IncidentCommand.tsx
-│   │   │   └── DatasetInspector.tsx
-│   │   └── modals/          # Detail modals
-│   ├── context/
-│   │   └── OperationalContext.tsx  # Global state and simulation engine
-│   ├── hooks/
-│   │   └── useTableSort.ts        # Reusable sorting hook
-│   ├── types/
-│   │   └── index.ts              # TypeScript interfaces
-│   └── utils/
-│       ├── csvColumnMap.ts       # CSV schema mapping
-│       └── csvParser.ts          # CSV import/export
-└── package.json
-```
-
-## Features
-
-### Operational Dashboard
-- Terminal Gate Map Radar with visual gate status across Terminals A, B, C
-- Live Event Feed with real-time operational events
-- KPI Strip showing active flights, on-time rate, gate utilization, baggage SLA, security wait, alerts
-- Flight Status Distribution pie chart of all flight statuses
-- Security Wait Times bar chart of checkpoint congestion
-
-### Flight Operations
-- Complete flight schedule with 100+ real flights
-- Filter by status, airline, terminal
-- Column sorting on all fields
-- Dispatch new flights
-- Delay tracking with reasons
-
-### Gate Management
-- Gate card visualization with status indicators
-- Jet Bridge and GPU toggle controls
-- Emergency event detection
-- Duration and priority tracking
-
-### Baggage Tracking
-- RFID bag tag tracking
-- Weight, dimensions, and location
-- Dangerous goods flagging
-- International baggage tracking
-
-### Passenger Operations
-- Passenger manifest with PNR codes
-- Class distribution (First, Business, Economy)
-- VIP and special assistance flags
-- Flight linking
-
-### Security Screening
-- Checkpoint monitoring with queue lengths
-- Wait time calculation
-- Threat level indicators (LOW, ELEVATED, HIGH)
-- Lane open/close controls
-
-### Maintenance Fleet
-- Work order management
-- Severity filtering (Critical, High, Medium, Low)
-- Aircraft grounding status
-- Technician assignment
-
-### Staff Dispatch
-- Department filtering (Ops, Security, Maintenance, etc.)
-- Status toggle (Active, On-Break, Off-Duty)
-- Overtime tracking
-- Multi-language support
-
-### Retail Analytics
-- POS revenue tracking (INR)
-- Category breakdown with pie chart
-- Store performance ranking
-- Transaction history
-
-### Incident Command
-- Live event feed with severity indicators
-- Simulation incident injector (emergency flights, weather, queue surges)
-- Alert resolution workflow
-- Cross-table alert linking
-
-### Dataset Inspector
-- Raw data viewer for all 8 CSV tables
-- Data dictionary with field definitions
-- CSV import/export functionality
-
-## Real-Time Simulation
-
-The application simulates a live operational environment:
-
-- Clock advances at configurable speed (1x, 5x, 10x, 30x)
-- Event feed populated from loaded dataset
-- Alerts generated from data anomalies
-- Play/pause and reset controls
-
-## Data Integration
-
-The application demonstrates meaningful cross-table relationships:
-
-- Flight to Gate: Gate events linked to assigned flights
-- Flight to Passengers: Passenger manifest per flight
-- Flight to Baggage: Baggage tracking per flight
-- Flight to Maintenance: Work orders linked to aircraft
-- Gate to Staff: Personnel assigned to gate stations
-- Alerts to Entities: Alerts linked to specific flights, gates, or checkpoints
-
-## Design System
-
-- Monochrome tactical aesthetic with black, white, off-white color scheme
-- JetBrains Mono for data and labels
-- Plus Jakarta Sans for headings
-- Border-heavy UI with sharp corners and high contrast
-- Information-dense layout for control center environment
-
-## Scripts
+### Build Commands
 
 ```bash
-npm run dev      # Start development server (port 3000)
 npm run build    # Build for production
-npm run preview  # Preview production build
-npm run lint     # Type checking
-npm run clean    # Clean build artifacts
+npm run preview  # Preview production build locally
+npm run lint     # Run TypeScript type check
 ```
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+---
 
 ## License
 
-This project is part of the Frontend Wars 2026 Grand Finale hackathon.
-
-## Acknowledgments
-
-- Frontend Arena for organizing the hackathon
-- Delhi Airport (DEL) for the realistic operational dataset
-- React and Vite communities for excellent tooling
+Built for the **Frontend Wars 2026 Grand Finale** hackathon.
