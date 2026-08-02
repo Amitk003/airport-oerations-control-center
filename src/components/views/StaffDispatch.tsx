@@ -125,7 +125,7 @@ export const StaffDispatch: React.FC = () => {
 
                   <td className="p-3 text-[#333333]">
                     <span className="font-bold text-[#1A1A1A]">{member.terminal}</span>
-                    <span className="ml-1 text-[#555555]">— {member.assignedGate}</span>
+                    <span className="ml-1 text-[#555555]">- {member.assignedGate}</span>
                   </td>
 
                   <td className="p-3 text-[#555555]">

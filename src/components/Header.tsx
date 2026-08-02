@@ -73,7 +73,7 @@ export const Header: React.FC = () => {
           <div className="flex items-center space-x-2 overflow-hidden">
             <ShieldAlert className="w-4 h-4 text-rose-400 shrink-0" />
             <span className="font-bold uppercase tracking-widest text-rose-400 shrink-0">CRITICAL INCIDENT:</span>
-            <span className="truncate">{criticalAlert.title} — {criticalAlert.description}</span>
+            <span className="truncate">{criticalAlert.title} - {criticalAlert.description}</span>
           </div>
           <button 
             onClick={() => openAlertDetail(criticalAlert.id)}
@@ -99,7 +99,7 @@ export const Header: React.FC = () => {
             </div>
             <p className="text-[11px] text-[#555555] flex items-center space-x-2 font-mono uppercase tracking-wider">
               <span>INDIRA GANDHI INTERNATIONAL</span>
-              <span>—</span>
+              <span>-</span>
               <span className="text-[#1A1A1A] font-bold">REAL-TIME OPERATIONS</span>
             </p>
           </div>

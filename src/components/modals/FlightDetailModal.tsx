@@ -165,7 +165,7 @@ export const FlightDetailModal: React.FC = () => {
 
             <div className="bg-white border border-[#1A1A1A] p-3">
               <div className="text-[#666666] text-[10px] uppercase font-bold tracking-wider">Weather</div>
-              <div className="text-[#1A1A1A] font-bold text-lg mt-0.5">{flight.weatherFlag ? '⚠️ Adverse' : '✅ Clear'}</div>
+              <div className="text-[#1A1A1A] font-bold text-lg mt-0.5">{flight.weatherFlag ? 'Adverse' : 'Clear'}</div>
             </div>
           </div>
 
@@ -307,7 +307,7 @@ export const FlightDetailModal: React.FC = () => {
                 {flightMaintenance.map((m) => (
                   <div key={m.id} className="bg-rose-50 p-3 border border-[#1A1A1A] text-xs font-mono">
                     <div className="flex items-center justify-between">
-                      <div className="font-bold text-[#1A1A1A]">{m.issueDescription} — <span className="text-rose-900 font-bold">Severity: {m.severity}</span></div>
+                      <div className="font-bold text-[#1A1A1A]">{m.issueDescription} - <span className="text-rose-900 font-bold">Severity: {m.severity}</span></div>
                       <span className={`px-2 py-0.5 text-[10px] font-bold uppercase border border-[#1A1A1A] ${
                         m.status === 'Resolved' ? 'bg-emerald-100 text-emerald-950' : 'bg-rose-100 text-rose-950'
                       }`}>

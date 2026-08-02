@@ -118,7 +118,7 @@ export const IncidentCommand: React.FC = () => {
 
           <button
             onClick={() => {
-              alert('Simulated thunderstorm alert dispatched across all terminals!');
+              alert('Simulated thunderstorm alert dispatched across all terminals.');
             }}
             className="p-3 bg-amber-50 border border-[#1A1A1A] text-amber-950 hover:bg-amber-100 text-left transition flex items-start space-x-2"
           >
@@ -131,7 +131,7 @@ export const IncidentCommand: React.FC = () => {
 
           <button
             onClick={() => {
-              alert('Simulated security queue surge triggered!');
+              alert('Simulated security queue surge triggered.');
             }}
             className="p-3 bg-purple-50 border border-[#1A1A1A] text-purple-950 hover:bg-purple-100 text-left transition flex items-start space-x-2"
           >

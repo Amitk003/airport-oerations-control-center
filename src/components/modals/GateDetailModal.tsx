@@ -159,7 +159,7 @@ export const GateDetailModal: React.FC = () => {
               </h3>
               <div className="bg-white p-3 border border-[#1A1A1A] flex items-center justify-between">
                 <div>
-                  <div className="text-base font-bold text-[#1A1A1A]">{gateFlight.flightNumber} — {gateFlight.airline}</div>
+                  <div className="text-base font-bold text-[#1A1A1A]">{gateFlight.flightNumber} - {gateFlight.airline}</div>
                   <div className="text-xs text-[#555555] mt-0.5">{gateFlight.aircraftType} • {gateFlight.origin} → {gateFlight.destination}</div>
                 </div>
                 <button
