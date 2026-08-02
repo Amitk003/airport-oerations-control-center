@@ -10,6 +10,8 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { useOperational } from '../../context/OperationalContext';
+import { useTableSort } from '../../hooks/useTableSort';
+import { Passenger } from '../../types';
 
 export const PassengerOperations: React.FC = () => {
   const { passengers, flights, selectedTerminal, openFlightDetail } = useOperational();
@@ -31,6 +33,8 @@ export const PassengerOperations: React.FC = () => {
 
     return matchesTerminal && matchesClass && matchesStatus && matchesSearch;
   });
+
+  const { sortedData: sortedPassengers, requestSort, getSortIndicator } = useTableSort<Passenger>(filteredPassengers, 'lastName');
 
   // Metrics
   const totalPassengers = passengers.length;
@@ -141,21 +145,20 @@ export const PassengerOperations: React.FC = () => {
       <div className="bg-white border border-[#1A1A1A] overflow-hidden">
         <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
           <table className="w-full text-left font-mono">
-            <thead className="bg-[#1A1A1A] text-white text-[10px] uppercase tracking-wider border-b border-[#1A1A1A] sticky top-0">
-              <tr>
-                <th className="p-3">Passenger Name</th>
-                <th className="p-3">PNR / Passport</th>
-                <th className="p-3">Flight</th>
-                <th className="p-3">Class / Seat</th>
-                <th className="p-3">Nationality</th>
-                <th className="p-3">Baggage</th>
-                <th className="p-3">Status</th>
-                <th className="p-3">Flags</th>
-              </tr>
+            <thead className="bg-[#1A1A1A] text-white text-[10px] uppercase tracking-wider border-b border-[#1A1A1A] sticky top-0">                <tr>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('lastName')}>Passenger Name{getSortIndicator('lastName')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('pnrCode')}>PNR / Passport{getSortIndicator('pnrCode')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('flightNumber')}>Flight{getSortIndicator('flightNumber')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('ticketClass')}>Class / Seat{getSortIndicator('ticketClass')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('nationality')}>Nationality{getSortIndicator('nationality')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('baggageCount')}>Baggage{getSortIndicator('baggageCount')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('status')}>Status{getSortIndicator('status')}</th>
+                  <th className="p-3">Flags</th>
+                </tr>
             </thead>
             <tbody className="divide-y divide-[#1A1A1A]/20 text-[#1A1A1A]">
-              {filteredPassengers.length > 0 ? (
-                filteredPassengers.map((passenger) => {
+              {sortedPassengers.length > 0 ? (
+                sortedPassengers.map((passenger) => {
                   const flight = flights.find((f) => f.flightNumber === passenger.flightNumber);
                   return (
                     <tr key={passenger.id} className="hover:bg-[#F9F8F6] transition">

@@ -7,6 +7,8 @@ import {
   Clock
 } from 'lucide-react';
 import { useOperational } from '../../context/OperationalContext';
+import { useTableSort } from '../../hooks/useTableSort';
+import { StaffShift } from '../../types';
 
 export const StaffDispatch: React.FC = () => {
   const { staff, selectedTerminal, updateStaffStatus } = useOperational();
@@ -24,6 +26,8 @@ export const StaffDispatch: React.FC = () => {
 
     return matchesTerminal && matchesDepartment && matchesSearch;
   });
+
+  const { sortedData: sortedStaff, requestSort, getSortIndicator } = useTableSort<StaffShift>(filteredStaff, 'staffName');
 
   // Get unique departments
   const departments = Array.from(new Set(staff.map(s => s.department)));
@@ -95,21 +99,20 @@ export const StaffDispatch: React.FC = () => {
       <div className="bg-white border border-[#1A1A1A] overflow-hidden">
         <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
           <table className="w-full text-left font-mono">
-            <thead className="bg-[#1A1A1A] text-white text-[10px] uppercase tracking-wider border-b border-[#1A1A1A] sticky top-0">
-              <tr>
-                <th className="p-3">Staff Name</th>
-                <th className="p-3">ID / Department</th>
-                <th className="p-3">Role</th>
-                <th className="p-3">Terminal / Gate</th>
-                <th className="p-3">Shift</th>
-                <th className="p-3">Hours</th>
-                <th className="p-3">Language</th>
-                <th className="p-3">Status</th>
-                <th className="p-3 text-right">Toggle</th>
-              </tr>
+            <thead className="bg-[#1A1A1A] text-white text-[10px] uppercase tracking-wider border-b border-[#1A1A1A] sticky top-0">                <tr>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('staffName')}>Staff Name{getSortIndicator('staffName')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('staffId')}>ID / Department{getSortIndicator('staffId')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('role')}>Role{getSortIndicator('role')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('terminal')}>Terminal / Gate{getSortIndicator('terminal')}</th>
+                  <th className="p-3">Shift</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('hoursWorked')}>Hours{getSortIndicator('hoursWorked')}</th>
+                  <th className="p-3">Language</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('status')}>Status{getSortIndicator('status')}</th>
+                  <th className="p-3 text-right">Toggle</th>
+                </tr>
             </thead>
             <tbody className="divide-y divide-[#1A1A1A]/20 text-[#1A1A1A]">
-              {filteredStaff.map((member) => (
+              {sortedStaff.map((member) => (
                 <tr key={member.id} className="hover:bg-[#F9F8F6] transition">
                   <td className="p-3 font-bold text-[#1A1A1A] text-sm">{member.staffName}</td>
 

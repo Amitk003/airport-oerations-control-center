@@ -9,6 +9,8 @@ import {
   MapPin
 } from 'lucide-react';
 import { useOperational } from '../../context/OperationalContext';
+import { useTableSort } from '../../hooks/useTableSort';
+import { Flight } from '../../types';
 
 export const FlightOperations: React.FC = () => {
   const { 
@@ -41,6 +43,9 @@ export const FlightOperations: React.FC = () => {
 
     return matchesTerminal && matchesStatus && matchesAirline && matchesSearch;
   });
+
+  // Sort
+  const { sortedData: sortedFlights, requestSort, getSortIndicator } = useTableSort<Flight>(filteredFlights, 'flightNumber');
 
   return (
     <div className="space-y-6 font-mono text-xs text-[#1A1A1A]">
@@ -96,23 +101,22 @@ export const FlightOperations: React.FC = () => {
       <div className="bg-white border border-[#1A1A1A] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left font-mono">
-            <thead className="bg-[#1A1A1A] text-white text-[10px] uppercase tracking-wider border-b border-[#1A1A1A]">
-              <tr>
-                <th className="p-3">Flight</th>
-                <th className="p-3">Airline</th>
-                <th className="p-3">Aircraft</th>
-                <th className="p-3">Route</th>
-                <th className="p-3">Terminal / Gate</th>
-                <th className="p-3">Schedule</th>
-                <th className="p-3">Pax / Cap</th>
-                <th className="p-3">Delay</th>
-                <th className="p-3">Status</th>
-                <th className="p-3 text-right">Action</th>
-              </tr>
+            <thead className="bg-[#1A1A1A] text-white text-[10px] uppercase tracking-wider border-b border-[#1A1A1A]">                <tr>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('flightNumber')}>Flight{getSortIndicator('flightNumber')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('airline')}>Airline{getSortIndicator('airline')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('aircraftType')}>Aircraft{getSortIndicator('aircraftType')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('destination')}>Route{getSortIndicator('destination')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('gate')}>Terminal / Gate{getSortIndicator('gate')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('scheduledDeparture')}>Schedule{getSortIndicator('scheduledDeparture')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('passengerCount')}>Pax / Cap{getSortIndicator('passengerCount')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('delayMinutes')}>Delay{getSortIndicator('delayMinutes')}</th>
+                  <th className="p-3 cursor-pointer hover:bg-white/20" onClick={() => requestSort('status')}>Status{getSortIndicator('status')}</th>
+                  <th className="p-3 text-right">Action</th>
+                </tr>
             </thead>
             <tbody className="divide-y divide-[#1A1A1A]/20 text-[#1A1A1A]">
-              {filteredFlights.length > 0 ? (
-                filteredFlights.map((flight) => (
+              {sortedFlights.length > 0 ? (
+                sortedFlights.map((flight) => (
                   <tr
                     key={flight.id}
                     onClick={() => openFlightDetail(flight.id)}
