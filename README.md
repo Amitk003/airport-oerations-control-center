@@ -40,14 +40,7 @@ npm run dev
 
 The application will be available at `http://localhost:3000`
 
-### Environment Variables
 
-Create a `.env.local` file:
-
-```env
-# Optional: Gemini API Key for AI features
-GEMINI_API_KEY=your_api_key_here
-```
 
 ## Tech Stack
 
@@ -175,11 +168,9 @@ airport-operations-control-center/
 The application simulates a live operational environment:
 
 - Clock advances at configurable speed (1x, 5x, 10x, 30x)
-- Passenger status progression (Checked-In, Security-Passed, Boarding, Boarded)
-- Baggage sorting (Check-in, Sorting, Loaded)
-- Security queue fluctuation with dynamic wait time calculation
-- Random alert generation every 20 simulation ticks
-- Flight status updates (Scheduled, Boarding, Departed)
+- Event feed populated from loaded dataset
+- Alerts generated from data anomalies
+- Play/pause and reset controls
 
 ## Data Integration
 
