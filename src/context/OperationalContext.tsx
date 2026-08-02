@@ -242,49 +242,13 @@ export const OperationalProvider: React.FC<{ children: React.ReactNode }> = ({ c
     loadCSVData();
   }, []);
 
-  // Simulation - reduced frequency to prevent lag
+  // Simulation - minimal updates to prevent lag
   useEffect(() => {
     if (!isPlaying || !isLoaded) return;
     const interval = setInterval(() => {
-      setTickCount((prev) => {
-        const next = prev + 1;
-        setCurrentTime((prevTime) => new Date(prevTime.getTime() + speedMultiplier * 1000));
-
-        // Security queue update - every 5 seconds
-        if (next % 5 === 0) {
-          setSecurity((prev) => prev.slice(0, 50).map((sc) => {
-            const delta = Math.floor(Math.random() * 5) - 2;
-            const newQueue = Math.max(5, sc.queueLength + delta);
-            const calculatedWait = Math.round((newQueue / Math.max(1, sc.lanesOpen * sc.throughputPerMin)) * 10);
-            return { ...sc, queueLength: newQueue, waitTimeMinutes: Math.max(2, calculatedWait), threatLevel: calculatedWait > 45 ? 'HIGH' : calculatedWait > 25 ? 'ELEVATED' : 'LOW' };
-          }));
-        }
-
-        // Flight status update - every 8 seconds
-        if (next % 8 === 0) {
-          setFlights((prev) => prev.slice(0, 50).map((f) => {
-            if (f.status === 'Scheduled' && Math.random() > 0.8) return { ...f, status: 'Boarding' as FlightStatus };
-            if (f.status === 'On Time' && Math.random() > 0.8) return { ...f, status: 'Boarding' as FlightStatus };
-            if (f.status === 'Boarding' && Math.random() > 0.7) return { ...f, status: 'Departed' as FlightStatus, actualDeparture: new Date().toISOString() };
-            return f;
-          }));
-        }
-
-        // Alert generation - every 30 seconds
-        if (next > 0 && next % 30 === 0) {
-          const alertTypes = ['security', 'baggage', 'flight'] as const;
-          const randomType = alertTypes[Math.floor(Math.random() * alertTypes.length)];
-          if (randomType === 'security') {
-            setAlerts((prev) => [{ id: `alt-gen-${Date.now()}`, timestamp: new Date().toISOString(), severity: 'WARNING', category: 'Security', title: 'Security queue congestion', description: 'Queue sensors detected backlog.', resolved: false }, ...prev].slice(0, 10));
-            setEventFeed((prev) => [{ id: `feed-gen-${Date.now()}`, timestamp: new Date().toISOString(), type: 'security', severity: 'warning', title: 'Security queue surge', description: 'Passenger backlog at checkpoint.' }, ...prev].slice(0, 30));
-          } else {
-            setEventFeed((prev) => [{ id: `feed-gen-${Date.now()}`, timestamp: new Date().toISOString(), type: 'flight', severity: 'info', title: 'Flight status update', description: 'Operational status changed.' }, ...prev].slice(0, 30));
-          }
-        }
-
-        return next;
-      });
-    }, 2000);
+      setTickCount((prev) => prev + 1);
+      setCurrentTime((prevTime) => new Date(prevTime.getTime() + speedMultiplier * 1000));
+    }, 1000);
     return () => clearInterval(interval);
   }, [isPlaying, speedMultiplier, isLoaded]);
 

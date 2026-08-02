@@ -49,7 +49,7 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab 
     { id: 'baggage', label: 'Baggage', icon: Luggage, badge: baggageDelayedCount },
     { id: 'passengers', label: 'Passengers', icon: UserCheck },
     { id: 'security', label: 'Security', icon: ShieldCheck, badge: highSecurityWaitCount },
-    { id: 'maintenance', label: 'Maint.', icon: Wrench, badge: criticalMaintenanceCount },
+    { id: 'maintenance', label: 'Maintenance', icon: Wrench, badge: criticalMaintenanceCount },
     { id: 'staff', label: 'Staff', icon: Users },
     { id: 'retail', label: 'Retail', icon: ShoppingBag },
     { id: 'incidents', label: 'Alerts', icon: AlertOctagon, badge: activeIncidentsCount },
@@ -58,8 +58,8 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab 
 
   return (
     <nav className="bg-white border-b border-[#1A1A1A] sticky top-[108px] z-30">
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-1.5">
-        <div className="flex flex-wrap gap-1">
+      <div className="max-w-[1400px] mx-auto px-4 py-3">
+        <div className="flex flex-wrap justify-center gap-2">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -67,17 +67,17 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab 
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-1 px-2 py-1 text-[11px] font-bold font-mono transition-all border ${
+                className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-bold font-mono transition-all border ${
                   isActive
                     ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
                     : 'bg-[#F9F8F6] text-[#1A1A1A]/80 hover:text-[#1A1A1A] hover:bg-white border-[#1A1A1A]/20'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-[#1A1A1A]/70'}`} />
+                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-[#1A1A1A]/70'}`} />
                 <span className="uppercase tracking-wider">{tab.label}</span>
 
                 {tab.badge !== undefined && tab.badge > 0 && (
-                  <span className={`px-1 py-0.5 text-[9px] font-mono font-bold ${
+                  <span className={`px-1.5 py-0.5 text-[9px] font-mono font-bold ${
                     isActive ? 'bg-white text-[#1A1A1A]' : 'bg-[#1A1A1A] text-white'
                   }`}>
                     {tab.badge}
